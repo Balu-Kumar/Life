@@ -1,75 +1,54 @@
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-
-export default function Tracker() {
-  const [data, setData] = useState({
-    weight: [],
-    bp: [],
-    exercise: [],
-    diet: [],
-    gatePrep: []
-  });
-
-  const handleLog = (type, value) => {
-    setData(prev => ({ ...prev, [type]: [...prev[type], { name: new Date().toLocaleDateString(), value }] }));
-  };
-
-  return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Fitness & GATE Tracker</h1>
-      <div className="grid grid-cols-2 gap-4">
-        <Card>
-          <CardContent>
-            <h2 className="text-lg font-semibold">Weight</h2>
-            <input type="number" placeholder="Enter weight (kg)" className="p-2 border rounded w-full" />
-            <Button onClick={() => handleLog("weight", Math.random() * 100)}>Log</Button>
-            <LineChart width={300} height={200} data={data.weight}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Line type="monotone" dataKey="value" stroke="#8884d8" />
-            </LineChart>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <h2 className="text-lg font-semibold">Blood Pressure</h2>
-            <input type="text" placeholder="Enter BP (e.g., 120/80)" className="p-2 border rounded w-full" />
-            <Button onClick={() => handleLog("bp", "120/80")}>Log</Button>
-            <LineChart width={300} height={200} data={data.bp}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Line type="monotone" dataKey="value" stroke="#82ca9d" />
-            </LineChart>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <h2 className="text-lg font-semibold">Exercise</h2>
-            <input type="text" placeholder="Workout details" className="p-2 border rounded w-full" />
-            <Button onClick={() => handleLog("exercise", "30 min run")}>Log</Button>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <h2 className="text-lg font-semibold">Diet</h2>
-            <input type="text" placeholder="Meal details" className="p-2 border rounded w-full" />
-            <Button onClick={() => handleLog("diet", "Oats & Banana")}>Log</Button>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <h2 className="text-lg font-semibold">GATE Prep</h2>
-            <input type="text" placeholder="Topics covered" className="p-2 border rounded w-full" />
-            <Button onClick={() => handleLog("gatePrep", "Thermodynamics")}>Log</Button>
-          </CardContent>
-        </Card>
-      </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness & GATE Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 10px; width: 300px; }
+        input, button { width: 100%; padding: 10px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fitness & GATE Tracker</h1>
+    <div class="container">
+        <div class="card">
+            <h2>Weight</h2>
+            <input type="number" id="weightInput" placeholder="Enter weight (kg)">
+            <button onclick="logData('weight')">Log</button>
+            <canvas id="weightChart"></canvas>
+        </div>
+        <div class="card">
+            <h2>Blood Pressure</h2>
+            <input type="text" id="bpInput" placeholder="Enter BP (e.g., 120/80)">
+            <button onclick="logData('bp')">Log</button>
+            <canvas id="bpChart"></canvas>
+        </div>
     </div>
-  );
-}
+    <script>
+        const data = { weight: [], bp: [] };
+
+        function logData(type) {
+            const input = document.getElementById(`${type}Input`).value;
+            if (input) {
+                data[type].push({ date: new Date().toLocaleDateString(), value: input });
+                updateChart(type);
+            }
+        }
+
+        function updateChart(type) {
+            const ctx = document.getElementById(`${type}Chart`).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data[type].map(d => d.date),
+                    datasets: [{ label: type, data: data[type].map(d => d.value), borderColor: 'blue', fill: false }]
+                }
+            });
+        }
+    </script>
+</body>
+</html>
