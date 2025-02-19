@@ -29,12 +29,16 @@
         </div>
     </div>
     <script>
-        const data = { weight: [], bp: [] };
+        const data = {
+            weight: JSON.parse(localStorage.getItem("weight")) || [],
+            bp: JSON.parse(localStorage.getItem("bp")) || []
+        };
 
         function logData(type) {
             const input = document.getElementById(`${type}Input`).value;
             if (input) {
                 data[type].push({ date: new Date().toLocaleDateString(), value: input });
+                localStorage.setItem(type, JSON.stringify(data[type]));
                 updateChart(type);
             }
         }
@@ -49,6 +53,11 @@
                 }
             });
         }
+
+        window.onload = function() {
+            updateChart('weight');
+            updateChart('bp');
+        };
     </script>
 </body>
 </html>
