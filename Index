@@ -1,0 +1,75 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+
+export default function Tracker() {
+  const [data, setData] = useState({
+    weight: [],
+    bp: [],
+    exercise: [],
+    diet: [],
+    gatePrep: []
+  });
+
+  const handleLog = (type, value) => {
+    setData(prev => ({ ...prev, [type]: [...prev[type], { name: new Date().toLocaleDateString(), value }] }));
+  };
+
+  return (
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-4">Fitness & GATE Tracker</h1>
+      <div className="grid grid-cols-2 gap-4">
+        <Card>
+          <CardContent>
+            <h2 className="text-lg font-semibold">Weight</h2>
+            <input type="number" placeholder="Enter weight (kg)" className="p-2 border rounded w-full" />
+            <Button onClick={() => handleLog("weight", Math.random() * 100)}>Log</Button>
+            <LineChart width={300} height={200} data={data.weight}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" />
+              <Line type="monotone" dataKey="value" stroke="#8884d8" />
+            </LineChart>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <h2 className="text-lg font-semibold">Blood Pressure</h2>
+            <input type="text" placeholder="Enter BP (e.g., 120/80)" className="p-2 border rounded w-full" />
+            <Button onClick={() => handleLog("bp", "120/80")}>Log</Button>
+            <LineChart width={300} height={200} data={data.bp}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" />
+              <Line type="monotone" dataKey="value" stroke="#82ca9d" />
+            </LineChart>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <h2 className="text-lg font-semibold">Exercise</h2>
+            <input type="text" placeholder="Workout details" className="p-2 border rounded w-full" />
+            <Button onClick={() => handleLog("exercise", "30 min run")}>Log</Button>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <h2 className="text-lg font-semibold">Diet</h2>
+            <input type="text" placeholder="Meal details" className="p-2 border rounded w-full" />
+            <Button onClick={() => handleLog("diet", "Oats & Banana")}>Log</Button>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <h2 className="text-lg font-semibold">GATE Prep</h2>
+            <input type="text" placeholder="Topics covered" className="p-2 border rounded w-full" />
+            <Button onClick={() => handleLog("gatePrep", "Thermodynamics")}>Log</Button>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
